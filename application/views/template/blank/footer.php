@@ -16,7 +16,6 @@
   ?>
   <!-- AdminLTE App -->
   <script src="assets/dist/js/adminlte.min.js"></script>
-  <script src="assets/dist/js/cignadlte.js"></script>
   <!-- Current Custom Page JS -->
   <?php
     foreach ($page_js as $key => $value) {

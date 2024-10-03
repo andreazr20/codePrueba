@@ -5,7 +5,7 @@ class Starter extends CI_Controller {
 	public function index()
 	{
 		$this->template
-      ->page_title('Starter Page')
+      ->page_title('Bienvenido!👋')
       ->load('starter');
 	}
 }

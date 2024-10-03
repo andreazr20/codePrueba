@@ -8,7 +8,6 @@
       'id', 
       'fullname', 
       'username', 
-      'password',
       'email', 
       'is_active'
     ];

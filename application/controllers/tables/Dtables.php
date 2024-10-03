@@ -5,13 +5,138 @@ class Dtables extends CI_Controller {
 	public function index()
 	{
 		$this->template
-			->page_title('Datatables')
+			->page_title('Lista de usuarios')
       ->plugins(['datatables'])
 			->page_js('assets/dist/js/pages/datatables.js')
       ->load('tables/datatables');
 
 		// $this->template->load();
 	}
+
+
+  public function create()
+{
+    // Obtener los datos del formulario enviados por AJAX
+    $fullname = $this->input->post('fullname', TRUE);
+    $username = $this->input->post('username', TRUE);
+    $email = $this->input->post('email', TRUE);
+
+    // Validar los campos requeridos
+    if (!$fullname || !$username || !$email) {
+        return $this->response->json(['success' => false, 'message' => 'Todos los campos son obligatorios.']);
+    }
+
+    // Cargar el modelo de usuarios
+    $this->load->model('users');
+
+    // Datos a insertar
+    $data = [
+        'fullname' => $fullname,
+        'username' => $username,
+        'email' => $email,
+        'is_active' => 1 // Por defecto, el nuevo usuario estará activo
+    ];
+
+    // Insertar los datos en la base de datos
+    $insertResult = $this->db->insert('users', $data);
+
+    // Verificar si la inserción fue exitosa
+    if ($insertResult) {
+        return $this->response->json(['success' => true, 'message' => 'Usuario creado correctamente.']);
+    } else {
+        return $this->response->json(['success' => false, 'message' => 'Error al crear el usuario.']);
+    }
+}
+
+
+  public function update()
+{
+    // Obtener los datos del formulario enviados por AJAX
+    $userId = $this->input->post('id', TRUE);
+    $fullname = $this->input->post('fullname', TRUE);
+    $username = $this->input->post('username', TRUE);
+    $email = $this->input->post('email', TRUE);
+
+    // Validar los campos requeridos
+    if (!$userId || !$fullname || !$username || !$email) {
+        return $this->response->json(['success' => false, 'message' => 'Todos los campos son obligatorios.']);
+    }
+
+    // Cargar el modelo de usuarios
+    $this->load->model('users');
+
+    // Datos a actualizar
+    $data = [
+        'fullname' => $fullname,
+        'username' => $username,
+        'email' => $email,
+    ];
+
+    // Actualizar los datos en la base de datos
+    $updateResult = $this->db->update('users', $data, ['id' => $userId]);
+
+    // Verificar si la actualización fue exitosa
+    if ($updateResult) {
+        return $this->response->json(['success' => true, 'message' => 'Usuario actualizado correctamente.']);
+    } else {
+        return $this->response->json(['success' => false, 'message' => 'Error al actualizar el usuario.']);
+    }
+}
+
+
+  public function delete()
+{
+    // Obtener el ID del usuario desde la solicitud AJAX
+    $userId = $this->input->post('id', TRUE);
+
+    // Verificar si el ID es válido
+    if (is_null($userId)) {
+        // Responder con error si no hay datos válidos
+        return $this->response->json(['success' => false, 'message' => 'ID de usuario no válido.']);
+    }
+
+    // Cargar el modelo que gestiona los usuarios (assume que es 'users')
+    $this->load->model('users');
+
+    // Eliminar el registro de la base de datos
+    $deleteResult = $this->db->delete('users', ['id' => $userId]); // Asume que la tabla es 'users'
+
+    // Verificar si la eliminación fue exitosa
+    if ($deleteResult) {
+        return $this->response->json(['success' => true, 'message' => 'Usuario eliminado correctamente.']);
+    } else {
+        return $this->response->json(['success' => false, 'message' => 'Error al eliminar el usuario.']);
+    }
+}
+
+
+  public function updateStatus()
+{
+    // Obtener el ID del usuario y el nuevo estado desde la solicitud AJAX
+    $userId = $this->input->post('id', TRUE);
+    $newStatus = $this->input->post('is_active', TRUE);
+
+    // Verificar si los datos son válidos
+    if (is_null($userId) || !isset($newStatus)) {
+        // Responder con error si no hay datos válidos
+        return $this->response->json(['success' => false, 'message' => 'Datos inválidos.']);
+    }
+
+    // Cargar el modelo que gestiona los usuarios (assume que es 'users')
+    $this->load->model('users');
+
+    // Actualizar el estado del usuario en la base de datos
+    $data = ['is_active' => $newStatus];
+    $this->db->where('id', $userId);
+    $updateResult = $this->db->update('users', $data); // Asume que la tabla es 'users'
+
+    // Verificar si la actualización fue exitosa
+    if ($updateResult) {
+        return $this->response->json(['success' => true, 'message' => 'Estado actualizado correctamente.']);
+    } else {
+        return $this->response->json(['success' => false, 'message' => 'Error al actualizar el estado.']);
+    }
+}
 
 	public function datatable()
 	{

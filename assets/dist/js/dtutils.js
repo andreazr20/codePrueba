@@ -1,51 +1,64 @@
 const DTUtils = {
-  refreshData: function (grid, initCompleteGrid, callback) {
-    grid.ajax.reload(initCompleteGrid)
+	refreshData: function (grid, initCompleteGrid, callback) {
+		grid.ajax.reload(initCompleteGrid);
 
-    if (callback && typeof callback === "function") {
-      callback()
-    }
-  },
-  toggleCheckbox: (inputID, is_checked) => {
-    return (
-      `<span class="custom-control custom-switch">
-        <input type="checkbox" class="dtutils-toggle-checkbox custom-control-input change_is_active custom-switch-off-danger custom-switch-on-success" id="${inputID}" value="1" ${is_checked ? 'checked' : ''} >
+		if (callback && typeof callback === "function") {
+			callback();
+		}
+	},
+	toggleCheckbox: (inputID, is_checked) => {
+		return `<span class="custom-control custom-switch">
+        <input type="checkbox" class="dtutils-toggle-checkbox custom-control-input change_is_active custom-switch-off-danger custom-switch-on-success" id="${inputID}" value="1" ${
+			is_checked ? "checked" : ""
+		} >
         <label class="custom-control-label" for="${inputID}"/>
-      </span>`
-    );
-  },
+      </span>`;
+	},
 	editDeleteButton: (full) => {
 		return `<div class="btn-group">
-      <div type="button" class="edit-data btn btn-sm btn-info" title="Edit Data" data-id="${full.id}">
+      <div type="button" class="edit-data btn btn-sm btn-info" title="Editar Usuario" data-id="${full.id}">
         <i class="fas fa-edit"></i>
       </div>
-      <div type="button" class="delete-data btn btn-sm btn-danger" title="Delete Data" data-id="${full.id}">
+      <div type="button" class="delete-data btn btn-sm btn-danger" title="Eliminar Usuario" data-id="${full.id}">
         <i class="fas fa-trash-alt"></i>
       </div>
     </div>`;
 	},
 	drawSearchResetButton: (table, rowFilter) => {
-		var search = $(`<button class="btn btn-success btn-sm btn-icon grid-search">
+		var search =
+			$(`<button class="btn btn-success btn-sm btn-icon grid-search" title="Buscar">
                   <span>
                     <i class="fa fa-search"></i>
                   </span>
                 </button>`);
 
-		var reset = $(`<button class="btn btn-default btn-sm btn-icon">
+		var reset =
+			$(`<button class="btn btn-default btn-sm btn-icon" title="Limpiar">
                   <span>
                     <i class="fas fa-sync"></i>
                   </span>
-                </button></div></div>`);
+                </button>`);
+
+		var addUser =
+			$(`<button class="btn btn-primary btn-sm btn-icon" title="Crear Usuario">
+                      <span>
+                        <i class="fas fa-plus"></i>
+                      </span>
+                    </button></div></div>`);
+
 		var coldiv = $('<div class="col-md-12 text-center">');
 		var btngrp = $('<div class="btn-group">');
 
-		var tmpSearch = btngrp.append(search);
-		var tmpReset = btngrp.append(reset);
-		var tmpcol = coldiv.append(tmpSearch).append(tmpReset);
+		btngrp.append(search).append(reset).append(addUser);
+		coldiv.append(btngrp);
 
-		var tmpRow = $('<div class="row">').append(tmpcol);
-
+		var tmpRow = $('<div class="row">').append(coldiv);
 		$('<th class="text-center">').append(tmpRow).appendTo(rowFilter);
+
+		$(addUser).on("click", function () {
+			// Lógica para agregar un nuevo usuario
+			$("#createUserModal").modal("show");
+		});
 
 		$(search).on("click", function (e) {
 			e.preventDefault();
